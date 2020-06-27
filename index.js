@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 const puppeteer = require("puppeteer");
 
 const accounts = JSON.parse(process.env["DUOLINGO_LOGIN"]);
@@ -7,15 +7,13 @@ const asyncForEach = async (array, callback) => {
   for (let i = 0; i < array.length; i++) {
     await callback(array[i], i, array);
   }
-}
+};
 
-const checkStreakFreeze = async function() {
+const checkStreakFreeze = async function () {
   try {
     await asyncForEach(accounts, async (account) => {
       const browser = await puppeteer.launch({
-        args: [
-          "--no-sandbox"
-        ]
+        args: ["--no-sandbox"],
       });
       const page = await browser.newPage();
       console.log(account.email + ": Navigating to Duolingo...");
@@ -29,22 +27,31 @@ const checkStreakFreeze = async function() {
       // eslint-disable-next-line no-undef
       await page.type("[data-test='email-input']", account.email);
       await page.type("[data-test='password-input']", account.password);
-      await page.keyboard.press('Enter');
-      
+      await page.keyboard.press("Enter");
+
       console.log(account.email + ": Navigating to shop...");
       await page.waitFor("[data-test='shop-nav']"); // navigate to shop
       await page.click("[data-test='shop-nav']");
 
       // grab elementHandle for streak freeze button
-      await page.waitForFunction("document.querySelector('body').innerText.includes('Streak Freeze')");
+      await page.waitForFunction(
+        "document.querySelector('body').innerText.includes('Streak Freeze')"
+      );
 
-      console.log(account.email + ": Verifying if streak freeze is equipped...");
+      console.log(
+        account.email + ": Verifying if streak freeze is equipped..."
+      );
       const button = await page.$x("//li[h3/text()='Streak Freeze']/button");
-      const innerText = await (await button[0].getProperty("innerText")).jsonValue();
+      const innerText = await (
+        await button[0].getProperty("innerText")
+      ).jsonValue();
 
       if (innerText != "EQUIPPED") {
         await button[0].click();
-        console.log(account.email + ": No streak freeze equipped, purchased streak freeze!");
+        console.log(
+          account.email +
+            ": No streak freeze equipped, purchased streak freeze!"
+        );
       } else {
         console.log(account.email + ": Streak freeze is already equipped");
       }
@@ -57,9 +64,9 @@ const checkStreakFreeze = async function() {
       await page.close();
       await browser.close();
     });
-  } catch(error) {
+  } catch (error) {
     console.log(error);
   }
-}
+};
 
 checkStreakFreeze();
