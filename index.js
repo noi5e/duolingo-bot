@@ -12,7 +12,11 @@ const asyncForEach = async (array, callback) => {
 const checkStreakFreeze = async function() {
   try {
     await asyncForEach(accounts, async (account) => {
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({
+        args: [
+          "--no-sandbox"
+        ]
+      });
       const page = await browser.newPage();
       console.log(account.email + ": Navigating to Duolingo...");
       await page.goto("https://www.duolingo.com");
