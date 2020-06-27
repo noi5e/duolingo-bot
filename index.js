@@ -20,13 +20,6 @@ const checkStreakFreeze = async function() {
 
       console.log(account.email + ": Entering login info...");
 
-      // Duolingo will suggest reusing previous login if it's cached
-      const useOtherAccount = await page.$("[data-test='use-another-account']");
-
-      if (useOtherAccount) {
-        await page.click("[data-test='use-another-account']");
-      }
-
       // enter e-mail & password
       await page.waitFor("[data-test='email-input']");
       // eslint-disable-next-line no-undef
@@ -58,7 +51,6 @@ const checkStreakFreeze = async function() {
       await page.click("[data-test='logout-button']");
       await page.waitForNavigation();
       await page.close();
-      // await page.screenshot({ path: "current.png", fullPage: true });
       await browser.close();
     });
   } catch(error) {
@@ -67,5 +59,3 @@ const checkStreakFreeze = async function() {
 }
 
 checkStreakFreeze();
-// setInterval(checkStreakFreeze, 30 * 60 * 1000);
-// setInterval(checkStreakFreeze, 12 * 60 * 60 * 1000);
