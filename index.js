@@ -11,9 +11,8 @@ const asyncForEach = async (array, callback) => {
 
 const checkStreakFreeze = async function() {
   try {
-    const browser = await puppeteer.launch();
-
     await asyncForEach(accounts, async (account) => {
+      const browser = await puppeteer.launch();
       const page = await browser.newPage();
       console.log(account.email + ": Navigating to Duolingo...");
       await page.goto("https://www.duolingo.com");
@@ -59,10 +58,9 @@ const checkStreakFreeze = async function() {
       await page.click("[data-test='logout-button']");
       await page.waitForNavigation();
       await page.close();
+      // await page.screenshot({ path: "current.png", fullPage: true });
+      await browser.close();
     });
-
-    // await page.screenshot({ path: "current.png", fullPage: true });
-    await browser.close();
   } catch(error) {
     console.log(error);
   }
